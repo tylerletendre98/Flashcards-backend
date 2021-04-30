@@ -1,4 +1,4 @@
-const {Collection , validate, collectionSchema} = require('../models/collection');
+const {Collection , validate} = require('../models/collection');
 const express = require('express');
 const router = express.Router();
 
@@ -62,11 +62,26 @@ router.put('/:id', async (req,res)=>{
         );
 
         if (!collection)
-            return res.status(400).send(`The product with the id "${req.params.id}" does not exist`);
+            return res.status(400).send(`The collection with the id "${req.params.id}" does not exist`);
 
             await collection.save();
 
             return res.send(collection);
+    }catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+});
+
+// DELETE ROUTE
+
+router.delete('/:id', async (req,res)=>{
+    try{
+        const collection = await Collection.findByIdAndRemove(req.params.id);
+
+        if(!collection)
+        return res.status(400).send(`The collection with the id: "${req.params.id}" does not exist.`);
+
+        return res.send(collection);
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
