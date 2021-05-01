@@ -3,7 +3,7 @@ const {Flashcard, validateFlashcard, flashcardSchema} = require('../models/flash
 const express = require('express');
 const router = express.Router();
 
-// POST ROUTE
+// POST A COLLECTION ROUTE
 
 router.post('/collection', async(req,res)=>{
     try{
@@ -22,7 +22,7 @@ router.post('/collection', async(req,res)=>{
     }
 });
 
-//GET ROUTE
+//GET COLLECTIONS ROUTE
 
 router.get('/collection', async (req,res)=>{
     try{
@@ -33,7 +33,7 @@ router.get('/collection', async (req,res)=>{
     }
 });
 
-//GET BY ID ROUTE 
+//GET COLLECTION BY ID ROUTE 
 
 router.get('/:id', async (req,res)=>{
     try {
@@ -47,7 +47,7 @@ router.get('/:id', async (req,res)=>{
     }
 });
 
-//UPDATE/PUT ROUTE
+// UPDATE/PUT ROUTE
 
 router.put('/:id', async (req,res)=>{
     try{
@@ -73,7 +73,7 @@ router.put('/:id', async (req,res)=>{
     }
 });
 
-// DELETE ROUTE
+// DELETE COLLECTION ROUTE
 
 router.delete('/:id', async (req,res)=>{
     try{
@@ -87,6 +87,8 @@ router.delete('/:id', async (req,res)=>{
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
 });
+
+//PUSH A FLASHCARD TO A COLLECTION
 
 router.post('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
     try{
@@ -106,7 +108,7 @@ router.post('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
 });
 
 
-//PUT REQUEST
+//UPDATE A FLASHCARD IN A COLLECTION REQUEST
 
 router.put('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
     try{
@@ -144,35 +146,6 @@ router.delete('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
 
         await collection.save();
         return res.send(flashcard)
-    }catch(ex){
-        return res.status(500).send(`Internal Server Error: ${ex}`);
-    }
-});
-
-
-//POST A FLASHCARD
-
-router.post('/flashcard', async(req,res)=>{
-    try{
-
-        const flashcard = new Flashcard({
-        question: req.body.question,
-        answer: req.body.answer
-        });
-
-        await flashcard.save();
-        return res.send(flashcard);
-    }catch(ex){
-        return res.status(500).send(`Internal Server Error: ${ex}`);
-    }
-});
-
-//GET FLASHCARDS
-
-router.get('/', async (req,res)=>{
-    try{
-        const flashcard = await Flashcard.find();
-        return res.send(flashcard);
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
