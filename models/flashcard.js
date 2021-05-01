@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { validate } = require('./collection');
 
 const flashcardSchema = new mongoose.Schema({
     question: {type: String , required: true, minlength: 5, maxlength: 250},
     answer: {type: String , required: true, minlength: 2, maxlength: 250},
-    dateModified: {type: Date, default: Date.now}
+    dateCreated: {type: Date, default: Date.now}
 });
 
-const Flashcard = mongoose.model('flashcards', flashcardSchema);
+const Flashcard = mongoose.model('flashcard', flashcardSchema);
 
 function validateFlashcard(flashcard){
         const schema = Joi.object({

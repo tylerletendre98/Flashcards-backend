@@ -8,7 +8,7 @@ const collectionSchema = new mongoose.Schema({
     dateModified:{type: Date, default: Date.now}
 });
 
-const Collection = mongoose.model('collections', collectionSchema);
+const Collection = mongoose.model('collection', collectionSchema);
 
 function validateCollection(collection){
     const schema = Joi.object({
