@@ -18,5 +18,5 @@ function validateFlashcard(flashcard){
 };
 
 exports.Flashcard = Flashcard;
-exports.validate = validateFlashcard;
+exports.validateFlashcard = validateFlashcard;
 exports.flashcardSchema = flashcardSchema;

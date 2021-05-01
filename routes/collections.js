@@ -1,5 +1,5 @@
 const {Collection , validate} = require('../models/collection');
-const {Flashcard, flashcardSchema} = require('../models/flashcard');
+const {Flashcard, validateFlashcard, flashcardSchema} = require('../models/flashcard');
 const express = require('express');
 const router = express.Router();
 
@@ -110,7 +110,7 @@ router.post('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
 
 router.put('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
     try{
-        const {error}= validate(req.body);
+        const {error}= validateFlashcard(req.body);
         if (error) return res.status(400).send(error);
 
         const collection = await Collection.findById(req.params.collectionId);
@@ -141,6 +141,8 @@ router.delete('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
         if (!flashcard) return res.status(400).send(`The flashcard with the Id: "${req.params.flashcardId}" does not exist.`);
 
         flashcard = await flashcard.remove();
+
+        await collection.save();
         return res.send(flashcard)
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
