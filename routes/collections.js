@@ -24,7 +24,7 @@ router.post('/collection', async(req,res)=>{
 
 //GET COLLECTIONS ROUTE
 
-router.get('/collection', async (req,res)=>{
+router.get('/collections', async (req,res)=>{
     try{
         const collection = await Collection.find();
         return res.send(collection);
@@ -41,6 +41,28 @@ router.get('/:id', async (req,res)=>{
         if (!collection)
         return res.status(400).send(`The collection with the id "${req.params.id}"does not exist.`);
         
+        return res.send(collection);
+    }catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+});
+
+//
+
+router.post('/:collectionId/newflashcard', async (req,res)=>{
+    try{
+        const {error} = validateFlashcard(req.body);
+        if (error) return res.status(400).send(error);
+    
+        const collection = await Collection.findById(req.params.collectionId);
+    
+        const flashcard = new Flashcard({
+            question: req.body.question,
+            answer: req.body.answer
+        });
+        
+        collection.flashcards.push(flashcard);
+        await collection.save();
         return res.send(collection);
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
@@ -86,25 +108,6 @@ router.delete('/:id', async (req,res)=>{
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
-});
-
-//PUSH A FLASHCARD TO A COLLECTION
-
-router.post('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
-    try{
-        const collection = await Collection.findById(req.params.collectionId);
-        if (!collection) return res.status(400).send(`The collection with the id "${req.params.collectionId} does not exist.`);
-
-        const flashcard = await Flashcard.findById(req.params.flashcardId);
-        if (!flashcard) return res.status(400).send(`The flashcard with the id ${req.params.flashcardId}does not exist.`);
-
-        collection.flashcards.push(flashcard);
-
-        await collection.save();
-        return res.send(collection.flashcards);
-    }catch(ex){
-        return res.status(500).send(`Internal Server Error: ${ex}`);
-   }
 });
 
 
