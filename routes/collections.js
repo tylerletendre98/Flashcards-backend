@@ -16,7 +16,8 @@ router.post('/collection', async(req,res)=>{
         });
 
         await collection.save();
-        return res.send(collection);
+        const collections = await Collection.find()
+        return res.send(collections);
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
@@ -49,7 +50,7 @@ router.get('/:id', async (req,res)=>{
 
 //
 
-router.post('/:collectionId/newflashcard', async (req,res)=>{
+router.post('/:collectionId', async (req,res)=>{
     try{
         const {error} = validateFlashcard(req.body);
         if (error) return res.status(400).send(error);
@@ -63,7 +64,8 @@ router.post('/:collectionId/newflashcard', async (req,res)=>{
         
         collection.flashcards.push(flashcard);
         await collection.save();
-        return res.send(collection);
+        const collections = await Collection.find();
+        return res.send(collections);
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
@@ -148,7 +150,8 @@ router.delete('/:collectionId/flashcards/:flashcardId', async (req,res)=>{
         flashcard = await flashcard.remove();
 
         await collection.save();
-        return res.send(flashcard)
+        const collections = await Collection.find()
+        return res.send(collections)
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
