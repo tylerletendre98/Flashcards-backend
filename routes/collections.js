@@ -12,7 +12,7 @@ router.post('/collection', async(req,res)=>{
         return res.status(400).send(error);
 
         const collection = new Collection({
-        title: req.body.title
+        title: req.body.title,
         });
 
         await collection.save();
@@ -36,7 +36,7 @@ router.get('/collections', async (req,res)=>{
 
 //GET COLLECTION BY ID ROUTE 
 
-router.get('/:id', async (req,res)=>{
+router.get('/:collectionId', async (req,res)=>{
     try {
         const collection = await Collection.findById(req.params.id);
         if (!collection)
@@ -48,7 +48,18 @@ router.get('/:id', async (req,res)=>{
     }
 });
 
-//
+//GETS A FLASHCARD FROM A COLLECTION
+
+router.get('/:collectionId/:flashcardId', async (req,res)=>{
+    try{
+        const collection = await Collection.findById(req.params.collectionId);
+        const flashcard = collection.flashcards.id(req.params.flashcardId);
+        return res.status(400).send(`The flashcard with the id "${req.params.id}" does not exist.`);
+        return res.send(flashcard);
+    }catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+});
 
 router.post('/:collectionId', async (req,res)=>{
     try{
@@ -61,8 +72,6 @@ router.post('/:collectionId', async (req,res)=>{
             question: req.body.question,
             answer: req.body.answer
         });
-        
-        collection.flashcards.push(flashcard);
         await collection.save();
         const collections = await Collection.find();
         return res.send(collections);
